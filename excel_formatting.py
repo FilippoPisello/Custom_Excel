@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # Created by Filippo Pisello
 
 from os import path, getcwd
@@ -26,14 +25,14 @@ class Custom_excel:
         self.keep_index = keep_index
         self.check_file_name = check_file_name
         self.correct_lists = correct_lists
-        
+
         self.workbook_sheet_exist = []
         self.workbook = " "
         self.sheet = " "
-        
+
         self.col_depth = self.ind_depth = " "
         self.header = self.index = self.body = []
-        
+
         self.format_header = format_header
         self.format_index_main = format_index_main
         self.format_index_light =format_index_light
@@ -50,7 +49,7 @@ class Custom_excel:
         self.light_alignment = alignment_light
         self.body_alignment = alignment_body
         self.custom_width = custom_width
-    
+
     # -------------------------------------------------------------------------
     # 1) Main function running the complete process
     # -------------------------------------------------------------------------
@@ -63,7 +62,7 @@ class Custom_excel:
         self.correct_file_name()
         self.workbook_sheet_exist, self.workbook = self.check_file_existence()
         self.save_df_to_excel()
-        
+
         # Table dimensions analysis
         self.col_depth, self.ind_depth = self.find_index_columns_depth()
         header_coordinates = self.find_header_coordinates()
@@ -73,7 +72,7 @@ class Custom_excel:
         self.header = self.rectangle_of_cells(header_coordinates)
         self.index = self.rectangle_of_cells(index_coordinates)
         self.body = self.rectangle_of_cells(body_coordinates)
-        
+
         # Table customization
         self.workbook, self.sheet = self.get_workbook_sheet()
         if self.format_header:
@@ -85,7 +84,7 @@ class Custom_excel:
         # If index was not formatted, format it as the body
         self.format_body(self.body + self.index * (not (self.format_index_main or self.format_index_light)))
         self.adjust_all_columns_width()
-        
+
         # Save file
         self.workbook.save(filename=self.file_name)
         return
@@ -97,18 +96,18 @@ class Custom_excel:
     def correct_lists_for_export(element):
         """
         Makes the lists contained in the table more adapt to be viewed in excel.
-        
+
         -------------------------
         This function must be passed to the columns through the apply method. Lists
         are "corrected" in four ways:
-        - If they contain missing values, they get removed since they would be 
+        - If they contain missing values, they get removed since they would be
         exported as the string 'nan'.
         - If the list appearing as entry is empty, it is substituted by a missing
         value.
         - If the list contains only one element, the list is subsituted by that
         element.
         - If the list has multiple elements, they will appear as strings separated
-        by a comma.        
+        by a comma.
         """
         if isinstance(element, list):
             element = [i for i in element if i is not np.nan]
@@ -143,7 +142,7 @@ class Custom_excel:
 
         ---------------
         It returns:
-        - First bool: tells if a workbook called as the provided file name exists. 
+        - First bool: tells if a workbook called as the provided file name exists.
         - Second bool: tells if inside the above workbook is present a sheet with the given name.
         - Workbook/None: if the workbook was found it returns it, else None.
 
@@ -163,7 +162,7 @@ class Custom_excel:
                     return [False, False], None  # will replace directly the workbook
         else:
             return [False, False], None
-        
+
     def save_df_to_excel(self):
         """
         Saves pandas dataframe to excel. Creates new notebooks or appends to old ones.
@@ -178,7 +177,7 @@ class Custom_excel:
             3) A new sheet is appended to the workbook
         """
         workbook_exist, sheet_exist = self.workbook_sheet_exist
-        
+
         if not workbook_exist:
             self.df.to_excel(self.file_name, sheet_name=self.sheet_name,
                             index=self.keep_index)
@@ -197,8 +196,8 @@ class Custom_excel:
         Returns number of multilevels for index and columns of a pandas dataframe.
 
         ---------------
-        Takes a pandas dataframe and returns a list containing respectively the 
-        number of levels of the multiindex and of the multicolumns. If the index 
+        Takes a pandas dataframe and returns a list containing respectively the
+        number of levels of the multiindex and of the multicolumns. If the index
         is simple the associated dimension is 1. Same is true for columns.
         """
         index_col_depth = []
@@ -215,8 +214,8 @@ class Custom_excel:
 
         ---------------
         Returns a list containing two lists of length two, each containing two numbers
-        which univocally identify a cell. The first number refers to the position 
-        of the column to which the cell belongs, while the second one is the number of the row. 
+        which univocally identify a cell. The first number refers to the position
+        of the column to which the cell belongs, while the second one is the number of the row.
         Examples:
         - "A1" -> [1, 1]
         - "Z3" -> [26, 3]
@@ -234,8 +233,8 @@ class Custom_excel:
 
         ---------------
         Returns a list containing two lists of length two, each containing two numbers
-        which univocally identify a cell. The first number refers to the position 
-        of the column to which the cell belongs, while the second one is the number of the row. 
+        which univocally identify a cell. The first number refers to the position
+        of the column to which the cell belongs, while the second one is the number of the row.
         Examples:
         - "A1" -> [1, 1]
         - "Z3" -> [26, 3]
@@ -252,20 +251,20 @@ class Custom_excel:
         Returns the cells belonging to a rectangular portion of a spreadsheet.
 
         ---------------
-        Returns a list containing pairs in the form "A1". These correspond to the 
-        cells contained in a rectangular portion of spreadsheet delimited by a top 
+        Returns a list containing pairs in the form "A1". These correspond to the
+        cells contained in a rectangular portion of spreadsheet delimited by a top
         left corner cell and a bottom right corner cell.
-        
+
         The coordinates provided must be in the form
         [[TL_letter_position, TL_row],[BR_letter_position, BR_row]]
         where TL stands for top left and BR for bottom right.
-        
+
         Example:
         - If [[1,1],[2,2]] is provided, the output will be [A1, A2, B1, B2]
         """
         starting_letter_pos, starting_number = coordinates_list[0]
         ending_letter_pos, ending_number = coordinates_list[1]
-        
+
         output_list = []
         increasing_number = starting_number
         while starting_letter_pos <= ending_letter_pos:
@@ -283,11 +282,11 @@ class Custom_excel:
         workbook = load_workbook(self.file_name)
         sheet = workbook.get_sheet_by_name(self.sheet_name)
         return workbook, sheet
-    
+
     def format_as_main(self, cells_list):
         """
         Applies formatting of the type "main" to a range of cells.
-        
+
         ---------------
         The formatting style includes the font size, font boldness, font color,
         fill color, alignment.
@@ -301,11 +300,11 @@ class Custom_excel:
         self.apply_formatting_to_cells(cells_list, main_font, main_fill,
                                        main_alignment)
         return
-    
+
     def format_as_light(self, cells_list):
         """
         Applies formatting of the type "light" to a range of cells.
-        
+
         ---------------
         The formatting style includes the font size, font boldness, font color,
         fill color, alignment.
@@ -319,11 +318,11 @@ class Custom_excel:
         self.apply_formatting_to_cells(cells_list, light_font, light_fill,
                                        light_alignment)
         return
-    
+
     def format_body(self, cells_list):
         """
         Applies formatting to body cells.
-        
+
         ---------------
         The formatting style includes the font size, font boldness, font color,
         fill color, alignment.
@@ -343,7 +342,7 @@ class Custom_excel:
             self.sheet.column_dimensions[self.excel_letter_given_pos(value)].width = self.custom_width
 
     # -------------------------------------------------------------------------
-    # 3) Methods used at their times in building blocks 
+    # 3) Methods used at their times in building blocks
     # -------------------------------------------------------------------------
     def apply_formatting_to_cells(self, cells_list, font_formatting=None,
                                   fill_formatting=None, alignment_formatting=None):
@@ -360,12 +359,12 @@ class Custom_excel:
             for cell in cells_list:
                 self.sheet[cell].alignment = alignment_formatting
         return
-    
+
     @staticmethod
     def excel_letter_given_pos(letter_position):
         """
         Returns the excel column's letter given index; ex: 1 -> "A", 27 -> "AA"
-        
+
         ------------------
         The position should be interpreted as the place where the cell is
         counting from left to right. There is no cell in position 0 as the counting
