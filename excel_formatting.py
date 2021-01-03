@@ -33,7 +33,7 @@ class CustomExcel(Spreadsheet):
         Dataframe to be considered.
     file_name: str (mandatory)
         The name of the file to be exported. It should be in the form "foo.xlsx".
-    keep_index : Bool, default=False
+    index : Bool, default=False
         If True, it is taken into account that the first column of the spreadsheet
         will be occupied by the index.
     skip_rows: int, default=0
@@ -64,11 +64,11 @@ class CustomExcel(Spreadsheet):
     light_formatting = ExcelStyle("b2beb5", alignment="left")
     plain_formatting = ExcelStyle()
 
-    def __init__(self, dataframe: pd.DataFrame, file_name, keep_index: bool=False,
-                 skip_rows: int=0, skip_columns: int=0, correct_lists: bool=False,
+    def __init__(self, dataframe: pd.DataFrame, file_name, index=False,
+                 skip_rows=0, skip_columns=0, correct_lists=False,
                  sheet_name="Sheet1", header_style="strong", index_style="light",
                  body_style="plain"):
-        super().__init__(dataframe, keep_index, skip_rows, skip_columns, correct_lists)
+        super().__init__(dataframe, index, skip_rows, skip_columns, correct_lists)
         self.file_name = file_name
         self.sheet_name = sheet_name
 
