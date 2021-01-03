@@ -75,9 +75,9 @@ class CustomExcel(Spreadsheet):
         self.workbook, self.sheet = None, None
 
         # Styles for the table parts
-        self.header_style = self._style_keyword_to_obj(header_style)
-        self.index_style = self._style_keyword_to_obj(index_style)
-        self.body_style = self._style_keyword_to_obj(body_style)
+        self.header.style = self._style_keyword_to_obj(header_style)
+        self.index.style = self._style_keyword_to_obj(index_style)
+        self.body.style = self._style_keyword_to_obj(body_style)
 
     # -------------------------------------------------------------------------
     # 1) Main methods
@@ -112,14 +112,11 @@ class CustomExcel(Spreadsheet):
             self._correct_file_name()
         self.save_df_to_excel()
 
-
         # Table customization
         self.workbook, self.sheet = self._get_workbook_sheet()
         #Loop to apply styles to the different table's components
-        components = [self.body, self.header, self.index]
-        styles = [self.body_style, self.header_style, self.index_style]
-        for component, style in zip(components, styles):
-            self.format_cells(component, style)
+        for element in [self.body, self.header, self.index]:
+            self.format_cells(element.cells, element.style)
         # Setting columns' width
         self._adjust_all_columns_width(custom_width)
 
