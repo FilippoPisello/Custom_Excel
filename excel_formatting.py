@@ -64,11 +64,10 @@ class CustomExcel(Spreadsheet):
     light_formatting = ExcelStyle("b2beb5", alignment="left")
     plain_formatting = ExcelStyle()
 
-    def __init__(self, dataframe: pd.DataFrame, file_name, index=False,
-                 skip_rows=0, skip_columns=0, correct_lists=False,
-                 sheet_name="Sheet1", header_style="strong", index_style="light",
-                 body_style="plain"):
-        super().__init__(dataframe, index, skip_rows, skip_columns, correct_lists)
+    def __init__(self, dataframe: pd.DataFrame, file_name: str, index=False,
+                 starting_cell="A1", correct_lists=False, sheet_name="Sheet1",
+                 header_style="strong", index_style="light", body_style="plain"):
+        super().__init__(dataframe, index, starting_cell, correct_lists)
         self.file_name = file_name
         self.sheet_name = sheet_name
 
