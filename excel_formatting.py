@@ -34,16 +34,13 @@ class CustomExcel(Spreadsheet):
     file_name: str (mandatory)
         The name of the file to be exported. It should be in the form "foo.xlsx".
     index : Bool, default=False
-        If True, it is taken into account that the first column of the spreadsheet
-        will be occupied by the index.
-    skip_rows: int, default=0
-        The number of rows which should be left empty at the top of the spreadsheet.
-    skip_cols: int, default=0
-        The number of columns which should be left empty at the left of the spreadsheet.
+        If True, the index is exported together with the header and body.
+    starting_cell: str, default="A1"
+        The cell where it will be placed the top left corner of the dataframe.
     correct_lists: Bool, default=False
         If True, the lists stored as the dataframe entries are modified to be more
-        readable in the traditional spreadsheet softwares. More details on dedicated
-        docstring.
+        readable in the traditional spreadsheet softwares. Type
+        help(CustomExcel.correct_lists_for_export) for further details.
     sheet_name: str, default="Sheet1"
         The label of the sheet to be created within the Excel workbook
     header_style: str or ExcelStyle object, default="strong"
@@ -74,12 +71,12 @@ class CustomExcel(Spreadsheet):
         self.workbook, self.sheet = None, None
 
         # Styles for the table parts
-        self.header.style = self._style_keyword_to_obj(header_style)
-        self.index.style = self._style_keyword_to_obj(index_style)
-        self.body.style = self._style_keyword_to_obj(body_style)
+        self.header_style = self._style_keyword_to_obj(header_style)
+        self.index_style = self._style_keyword_to_obj(index_style)
+        self.body_style = self._style_keyword_to_obj(body_style)
 
     # -------------------------------------------------------------------------
-    # 1) Main methods
+    # 1 - Main methods
     # -------------------------------------------------------------------------
     def to_custom_excel(self, custom_width=20, check_file_name=True):
         """
@@ -114,8 +111,10 @@ class CustomExcel(Spreadsheet):
         # Table customization
         self.workbook, self.sheet = self._get_workbook_sheet()
         #Loop to apply styles to the different table's components
-        for element in [self.body, self.header, self.index]:
-            self.format_cells(element.cells, element.style)
+        elements = [self.body, self.header, self.index]
+        styles = [self.body_style, self.header_style, self.index_style]
+        for element, style in zip(elements, styles):
+            self.format_cells(element.cells, style)
         # Setting columns' width
         self._adjust_all_columns_width(custom_width)
 
