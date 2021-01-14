@@ -29,6 +29,8 @@ class ExcelStyle:
         self.h_alignment = alignment
 
     def font(self):
+        if self.font_color=="000000" and self.font_size==11 and not self.font_bold:
+            return None
         return Font(color=self.font_color, size=self.font_size, bold=self.font_bold)
 
     def alignment(self):
@@ -36,6 +38,6 @@ class ExcelStyle:
 
     def fill(self):
         if self.fill_color is None:
-            return PatternFill(fill_type=None)
+            return None
         return PatternFill(fill_type="solid", start_color=self.fill_color,
                            end_color=self.fill_color)

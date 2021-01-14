@@ -282,8 +282,14 @@ class CustomExcel(Spreadsheet):
         font = style_object.font()
         fill = style_object.fill()
         alignment = style_object.alignment()
+
+        font_is_none = font is None
+        fill_is_none = fill is None
+
         for cell in cells_list:
-            self.sheet[cell].font = font
-            self.sheet[cell].fill = fill
+            if not font_is_none:
+                self.sheet[cell].font = font
+            if not fill_is_none:
+                self.sheet[cell].fill = fill
             self.sheet[cell].alignment = alignment
         return
