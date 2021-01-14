@@ -279,8 +279,11 @@ class CustomExcel(Spreadsheet):
         ---------------
         Cells_list should be a list in the form ["A1", "A2", ...].
         """
+        font = style_object.font()
+        fill = style_object.fill()
+        alignment = style_object.alignment()
         for cell in cells_list:
-            self.sheet[cell].font = style_object.font()
-            self.sheet[cell].fill = style_object.fill()
-            self.sheet[cell].alignment = style_object.alignment()
+            self.sheet[cell].font = font
+            self.sheet[cell].fill = fill
+            self.sheet[cell].alignment = alignment
         return
