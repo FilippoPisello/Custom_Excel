@@ -16,7 +16,7 @@
 # 1. Overview
 The CustomExcel class allows the user to export a pandas data frame in excel directly applying some styling. The logic of the formatting is the following: some styles objects are created and applied to the different parts of the table. These are: index, header and body.
 
-CustomExcel is a subclass of the Spreadsheet class. The code and doc for this class can be found [at this link](https://github.com/FilippoPisello/Spreadsheet).
+CustomExcel is a subclass of the Spreadsheet class, whose code and doc can be found [at this link](https://github.com/FilippoPisello/Spreadsheet).
 
 ## 1.1. Goal of the project
 The CustomExcel class wants to provide a compact way to export a Pandas' data frame to Excel, directly formatting the sheet. The goal is to obtain immediately a file with a pleasant look which can be easily consulted. To understand its use, one can see this as an enhanced form of the pandas built-in method df.to_excel().
@@ -62,10 +62,8 @@ The class inherits five arguments from the Spreadsheet class:
   - The pandas data frame to be considered.
 - **keep_index** : Bool, default=False
   - If True, it is taken into account that the first column of the spreadsheet will be occupied by the index. All the dimensions will be adjusted as consequence.
-- **skip_rows**: int, default=0
-  - The number of rows which should be left empty at the top of the spreadsheet. Referring to excel row numbering, the table content starts at skip_rows + 1. If 0, content starts at row 1.
-- **skip_cols**: int, default=0
-  - The number of columns which should be left empty at the left of the spreadsheet. Referring to excel column labelling, the table content starts at letter with index skip_cols. If 0, content starts at column "A".
+- **starting_cell**: str, default="A1"
+  - The cell where it will be placed the top left corner of the data frame.
 - **correct_lists**: Bool, default=False
   - If True, the lists stored as the data frame entries are modified to be more readable in the traditional spreadsheet softwares. This happens in four ways. (1) Empty lists are replaced by missing values. (2) Missing values are removed from within the lists. (3) Lists of len 1 are replaced by the single element they contain. (4) Lists are replaced by str formed by their elements separated by commas.
 
@@ -73,7 +71,7 @@ There are then five native arguments of the class:
 - **file_name** : str (mandatory)
   - Name of the file to be exported.
 - **sheet_name**: str, default="Sheet1"
-  - Label of the sheet to be created within the destination workbook
+  - Label of the sheet which should be target of the data upload. If a sheet with the provided name does not exist, it will be created.
 - **header_style**: str or ExcelStyle object, default="strong"
   - The style to be given to the table's header. If str it should be one of the following keywords: "strong", "light", "plain". Custom ExcelStyle obj can be created through the new_style() method.
 - **index_style**: str or ExcelStyle object, default="light"
@@ -111,10 +109,10 @@ The CustomExcel object inherits eight properties from the Spreadsheet class:
 - **self.header_coordinates** : [[int, int], [int, int]]
 - **self.index_coordinates**: [[int, int], [int, int]]
 - **self.body_coordinates**: [[int, int], [int, int]]
-- **self.header**: [str, ...]
-- **self.index**: [str, ...]
-- **self.body**: [str, ...]
-- **self.table**: [str, ...]
+- **self.header**: SpreadsheetElement object
+- **self.index**: SpreadsheetElement object
+- **self.body**: SpreadsheetElement object
+- **self.table**: SpreadsheetElement object
 
 Details on these can be found at this [_link_](https://github.com/FilippoPisello/Spreadsheet).
 

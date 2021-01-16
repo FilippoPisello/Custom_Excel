@@ -261,7 +261,7 @@ class CustomExcel(Spreadsheet):
         Returns the desired workbook and sheet objects based on their name.
         """
         workbook = load_workbook(self.file_name)
-        sheet = workbook.get_sheet_by_name(self.sheet_name)
+        sheet = workbook[self.sheet_name]
         return workbook, sheet
 
     def _adjust_all_columns_width(self, custom_width):
